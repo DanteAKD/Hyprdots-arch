@@ -1,5 +1,5 @@
 if status is-interactive
-    nitch
+    fastfetch
     export EDITOR="nvim"
     export VISUAL="nvim"
     fish_add_path .local/bin
