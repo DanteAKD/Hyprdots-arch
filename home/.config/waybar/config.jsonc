@@ -248,7 +248,8 @@
 },
 
 "clock": {
-    "format": "{:%R 󰃭 %d·%m·%y}",
+    "interval": 1,
+    "format": "{:%a %d %H:%M:%S}",
     "rotate": 0,
     "format-alt": "{:%R 󰃭 %d·%m·%y}",
     "tooltip-format": "<tt>{calendar}</tt>",
