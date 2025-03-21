@@ -16,8 +16,8 @@ read -p "Enter the username for config installation: " USERNAME
 
 # 4. Remove fish and ranger directories from the user's ~/.config
 #    (Only do this if they exist—just to avoid error messages)
-echo "Removing any existing fish and ranger configs in /home/$USERNAME/.config..."
-rm -rf "/home/$USERNAME/.config/fish" "/home/$USERNAME/.config/ranger"
+echo "Removing any existing configs in /home/$USERNAME/.config..."
+rm -rf "/home/$USERNAME/.config/fish" "/home/$USERNAME/.config/ranger" "/home/$USERNAME/.config/alacritty" "/home/$USERNAME/.config/cava" "/home/$USERNAME/.config/dunst" "/home/$USERNAME/.config/fastfetch" "/home/$USERNAME/.config/hypr" "/home/$USERNAME/.config/nvim" "/home/$USERNAME/.config/rofi" "/home/$USERNAME/.config/waybar"               
 
 # 5. Copy all contents from 'home/.config' (inside this repo) to the user's ~/.config
 #    Assuming we're already in the Hyprdots-arch directory that contains 'home/.config'
@@ -32,7 +32,7 @@ chown -R "$USERNAME:$USERNAME" "/home/$USERNAME/.config"
 echo "Installing Hyprland and related packages..."
 pacman -S --noconfirm --needed \
   swww swaylock grim slurp swappy wl-clipboard cliphist \
-  waybar hyprland rofi-wayland dunst imagemagick xdg-desktop-portal-hyprland
+  waybar hyprland rofi-wayland dunst imagemagick xdg-desktop-portal-hyprland jq
 
-echo "All done, bro! Your Hyprland environment should be good to go."
+echo "Your Hyprland environment should be good to go."
 
