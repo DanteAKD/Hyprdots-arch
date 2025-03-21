@@ -32,7 +32,7 @@ chown -R "$USERNAME:$USERNAME" "/home/$USERNAME/.config"
 echo "Installing Hyprland and related packages..."
 pacman -S --noconfirm --needed \
   swww swaylock grim slurp swappy wl-clipboard cliphist \
-  waybar hyprland rofi-wayland dunst imagemagick
+  waybar hyprland rofi-wayland dunst imagemagick xdg-desktop-portal-hyprland
 
 echo "All done, bro! Your Hyprland environment should be good to go."
 
