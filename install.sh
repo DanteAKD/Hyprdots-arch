@@ -14,7 +14,7 @@ pacman -Syu --noconfirm
 # 3. Prompt for username (since we're running as root)
 read -p "Enter the username for config installation: " USERNAME
 
-# 4. Remove fish and ranger directories from the user's ~/.config
+# 4. Remove directories from the user's ~/.config
 #    (Only do this if they exist—just to avoid error messages)
 echo "Removing any existing configs in /home/$USERNAME/.config..."
 rm -rf "/home/$USERNAME/.config/fish" "/home/$USERNAME/.config/ranger" "/home/$USERNAME/.config/alacritty" "/home/$USERNAME/.config/cava" "/home/$USERNAME/.config/dunst" "/home/$USERNAME/.config/fastfetch" "/home/$USERNAME/.config/hypr" "/home/$USERNAME/.config/nvim" "/home/$USERNAME/.config/rofi" "/home/$USERNAME/.config/waybar"               
