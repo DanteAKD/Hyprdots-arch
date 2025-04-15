@@ -2,23 +2,8 @@ Hyprland configuration for Arch Linux, installation script incoming! (make sure 
 
 ## Usage:
 
+Run this one-liner to set up everything automatically:
 
 ```
-git clone https://github.com/DanteAKD/Hyprdots-arch.git
-```
-
-```
-cd Hyprdots-arch
-```
-
-## Make the script executable
-
-```
-sudo chmod +x install.sh
-```
-
-## Run as root (important)
-
-```
-sudo ./install.sh
+bash <(curl -fsSL https://raw.githubusercontent.com/nixuris/Hyprdots-arch/main/install.sh)
 ```
