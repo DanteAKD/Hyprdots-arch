@@ -24,7 +24,7 @@ if [[ -d "$REPO_DIR" ]]; then
 fi
 
 echo "⬇️ Cloning Hyprdots repository..."
-git clone "$REPO_URL"
+git clone --depth 1 "$REPO_URL"
 cd "$REPO_DIR"
 
 # System update
