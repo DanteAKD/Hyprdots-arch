@@ -1,38 +1,76 @@
 #!/bin/bash
 # Hyprland Install Script
 
-# 1. Check if running as root
-if [ "$EUID" -ne 0 ]; then
-  echo "Please run this script as root, dawg!"
+set -euo pipefail
+
+# Ask for sudo password upfront
+if [[ "$EUID" -ne 0 ]]; then
+  echo "🔐 Sudo is required. Please enter your password."
+  sudo -v
+fi
+
+# Keep sudo alive while the script runs
+( while true; do sudo -v; sleep 60; done ) &
+KEEP_SUDO_ALIVE_PID=$!
+trap 'kill $KEEP_SUDO_ALIVE_PID' EXIT
+
+# Clone the Hyprdots repository if not already present
+REPO_URL="https://github.com/DanteAKD/Hyprdots-arch.git"
+REPO_DIR="Hyprdots-arch"
+
+if [[ -d "$REPO_DIR" ]]; then
+  echo "📁 Directory $REPO_DIR already exists. Removing it first..."
+  rm -rf "$REPO_DIR"
+fi
+
+echo "⬇️ Cloning Hyprdots repository..."
+git clone "$REPO_URL"
+cd "$REPO_DIR"
+
+# System update
+echo "🔄 Updating system packages..."
+pacman -Syu --noconfirm
+
+# Prompt for the target username
+read -rp "👤 Enter the username for config installation: " USERNAME
+
+USER_HOME="/home/$USERNAME"
+
+if ! id "$USERNAME" &>/dev/null; then
+  echo "❌ User '$USERNAME' does not exist. Exiting."
   exit 1
 fi
 
-# 2. Update the system
-echo "Updating system with pacman -Syu..."
-pacman -Syu --noconfirm
+# Define config directories to remove
+CONFIG_PATH="$USER_HOME/.config"
+CONFIGS_TO_REMOVE=(
+  fish ranger alacritty cava dunst fastfetch hypr
+  nvim rofi waybar
+)
 
-# 3. Prompt for username (since we're running as root)
-read -p "Enter the username for config installation: " USERNAME
+echo "🧹 Removing existing config directories..."
+for dir in "${CONFIGS_TO_REMOVE[@]}"; do
+  TARGET="$CONFIG_PATH/$dir"
+  if [[ -e "$TARGET" ]]; then
+    echo "  🗑️ Removing $TARGET"
+    rm -rf "$TARGET"
+  fi
+done
 
-# 4. Remove directories from the user's ~/.config
-#    (Only do this if they exist—just to avoid error messages)
-echo "Removing any existing configs in /home/$USERNAME/.config..."
-rm -rf "/home/$USERNAME/.config/fish" "/home/$USERNAME/.config/ranger" "/home/$USERNAME/.config/alacritty" "/home/$USERNAME/.config/cava" "/home/$USERNAME/.config/dunst" "/home/$USERNAME/.config/fastfetch" "/home/$USERNAME/.config/hypr" "/home/$USERNAME/.config/nvim" "/home/$USERNAME/.config/rofi" "/home/$USERNAME/.config/waybar"               
+# Copy new configs
+echo "📁 Copying new configs to $CONFIG_PATH..."
+mkdir -p "$CONFIG_PATH"
+cp -r home/.config/* "$CONFIG_PATH"
 
-# 5. Copy all contents from 'home/.config' (inside this repo) to the user's ~/.config
-#    Assuming we're already in the Hyprdots-arch directory that contains 'home/.config'
-echo "Copying new .config files to /home/$USERNAME/.config..."
-mkdir -p "/home/$USERNAME/.config"
-cp -r home/.config/* "/home/$USERNAME/.config"
+# Fix ownership
+echo "🛠️ Fixing ownership for $USERNAME..."
+chown -R "$USERNAME:$USERNAME" "$CONFIG_PATH"
 
-# 6. Fix ownership of the copied configs so they're owned by the user
-chown -R "$USERNAME:$USERNAME" "/home/$USERNAME/.config"
-
-# 7. Install the required Hyprland packages
-echo "Installing Hyprland and related packages..."
+# Install Hyprland and required packages
+echo "📦 Installing Hyprland and related tools..."
 pacman -S --noconfirm --needed \
   swww swaylock grim slurp swappy wl-clipboard cliphist \
-  waybar hyprland rofi-wayland dunst imagemagick xdg-desktop-portal-hyprland jq
+  waybar hyprland rofi-wayland dunst imagemagick \
+  xdg-desktop-portal-hyprland jq
 
-echo "Your Hyprland environment should be good to go."
-
+echo "✅ Hyprland environment installed successfully!"
